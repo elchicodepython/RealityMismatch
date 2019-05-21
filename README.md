@@ -7,8 +7,8 @@ Im working with anyone who wants to participate in the building of a Hacking Vid
 
 The labs are going to be raised by Docker or Virtual Machines and they should be integrated inside the game.
 
-The videogame will be created using web technologies and it should allow anyone to develope new unofficial level.
+The videogame will be created using web technologies and it should allow anyone to develope new unofficial levels.
 
-Levels are going to have an addon system so the could be installed to make the game grow infinitely.
+Levels are going to have an addon system so they could be installed to make the game grow infinitely.
 
 All the levels should provide at least three "entrypoints" to let other developers use that entrypoint as a start point for the new developed level.
