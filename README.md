@@ -18,3 +18,9 @@ All the levels should provide at least three "entrypoints" to let other develope
 ## Open Canvas
 
 ![Open Canvas](https://raw.githubusercontent.com/ElChicoDePython/RealityMismatch/master/docs/source/_static/Canvas.jpg)
+
+## Developers Platform
+
+In order to provide level namespaces and a centraliced place to in a future share information and new levels a developer platform it's going to be created where Level Creators should register their levels before crearting it in order to get a special level key and avoid name collisions.
+
+https://github.com/ElChicoDePython/RealityMismatch-DevelopersPlatform
