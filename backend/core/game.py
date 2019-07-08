@@ -15,7 +15,9 @@ class Entrypoint:
 
     name = "Undefined"
 
-    def __init__(self, level_identifier: LevelIdentifier, codename: EntrypointCodename):
+    def __init__(
+        self, level_identifier: LevelIdentifier, codename: EntrypointCodename
+    ):
         self._level_identifier = level_identifier
         self._codename = codename
         self.__level = None
@@ -38,7 +40,9 @@ class Entrypoint:
         :type: level: Level
         """
         if self.__level is not None:
-            raise EntrypointNotEmpty("This entrypoint has already a Level registered")
+            raise EntrypointNotEmpty(
+                "This entrypoint has already a Level registered"
+            )
         self.__level = level
 
     def has_level(self):
@@ -84,7 +88,8 @@ class Level:
         except EntrypointDoesNotExist:
             self._entrypoints.append(
                 Entrypoint(
-                    LevelIdentifier(self._identifier), EntrypointCodename(codename)
+                    LevelIdentifier(self._identifier),
+                    EntrypointCodename(codename),
                 )
             )
 
@@ -98,7 +103,8 @@ class Story:
 
         # Level 0. Empty level needed to hook the first level in it
         level = Level(
-            LevelIdentifier("origin"), Entrypoint("origin", ".")  # Dummy Startpoint
+            LevelIdentifier("origin"),
+            Entrypoint("origin", "."),  # Dummy Startpoint
         )
         level.add_entrypoint("origin")
         self._levels["origin"] = level
@@ -109,7 +115,9 @@ class Story:
 
         level_associated = self._levels.get(entrypoint.level_identifier)
         if level_associated:
-            registered_entrypoint = level_associated.get_entrypoint(entrypoint.codename)
+            registered_entrypoint = level_associated.get_entrypoint(
+                entrypoint.codename
+            )
             if registered_entrypoint:
                 return registered_entrypoint
 
