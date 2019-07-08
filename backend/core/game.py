@@ -4,7 +4,6 @@ from .exceptions import (
     AlreadyRegisteredLevel,
     EntrypointDoesNotExist,
     EntrypointNotEmpty,
-    LevelNotRegistered,
 )
 from .types import LevelIdentifier, EntrypointCodename
 
@@ -131,7 +130,8 @@ class Story:
         # Search for previous registered levels with the same identifier
         if level.identifier in self._levels:
             raise AlreadyRegisteredLevel(
-                f"The level {level.identifier} has been already registered in this history"
+                f"The level {level.identifier} has been already registered in"
+                "this history"
             )
 
         # Add the level
