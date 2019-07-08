@@ -4,9 +4,11 @@ from ..core.exceptions import (
     EntrypointNotEmpty,
     EntrypointDoesNotExist,
     AlreadyRegisteredLevel,
+    InvalidManifestStructure,
 )
 from ..core.game import Entrypoint, Level, Story
 from ..core.types import LevelIdentifier, EntrypointCodename
+from ..core.loader import Loader
 
 
 class TestEntrypoint(unittest.TestCase):
@@ -21,13 +23,13 @@ class TestEntrypoint(unittest.TestCase):
             entrypoint.codename,
             EntrypointCodename("poc"),
             msg="Entrypoint codename does not match with the provided"
-                "entrypoint",
+            "entrypoint",
         )
         self.assertEqual(
             entrypoint.level_identifier,
             LevelIdentifier("demo"),
             msg="Entrypoint level identifier does not match with the provided"
-                "level identifier",
+            "level identifier",
         )
         self.assertFalse(
             entrypoint.has_level(),
@@ -140,7 +142,9 @@ class TestStory(unittest.TestCase):
 
         with self.assertRaises(EntrypointDoesNotExist):
             story._get_entrypoint(
-                Entrypoint(LevelIdentifier("intro"), EntrypointCodename("bar"))
+                Entrypoint(
+                    LevelIdentifier("intro"), EntrypointCodename("bar")
+                )
             )
 
         with self.assertRaises(EntrypointDoesNotExist):
@@ -149,3 +153,24 @@ class TestStory(unittest.TestCase):
                     LevelIdentifier("foo"), EntrypointCodename("matrix")
                 )
             )
+
+
+class TestLoader(unittest.TestCase):
+
+    MINIMUM_LEVEL_FILES = ("manifest.json", "level.py")
+    MINIMUM_MANIFEST_KEYS = ("id", "startpointLevelId", "startpointCodename")
+
+    def test_local_levels(self):
+        Loader.local_levels()
+        # TODO: to complete this test
+
+    def test_check_valid_manifest(self):
+        Loader.check_valid_level_manifest(
+            {
+                "id": "testManifest",
+                "startpointLevelId": "testId",
+                "startpointCodename": "codeTest",
+            }
+        )
+        with self.assertRaises(InvalidManifestStructure):
+            Loader.check_valid_level_manifest({})
