@@ -3,7 +3,6 @@ import unittest
 from ..core.exceptions import (
     EntrypointNotEmpty,
     EntrypointDoesNotExist,
-    LevelNotRegistered,
     AlreadyRegisteredLevel,
 )
 from ..core.game import Entrypoint, Level, Story
@@ -21,12 +20,14 @@ class TestEntrypoint(unittest.TestCase):
         self.assertEqual(
             entrypoint.codename,
             EntrypointCodename("poc"),
-            msg="Entrypoint codename does not match with the provided entrypoint",
+            msg="Entrypoint codename does not match with the provided"
+                "entrypoint",
         )
         self.assertEqual(
             entrypoint.level_identifier,
             LevelIdentifier("demo"),
-            msg="Entrypoint level identifier does not match with the provided level identifier",
+            msg="Entrypoint level identifier does not match with the provided"
+                "level identifier",
         )
         self.assertFalse(
             entrypoint.has_level(),
