@@ -170,6 +170,7 @@ class TestLoader(unittest.TestCase):
                 "id": "testManifest",
                 "startpointLevelId": "testId",
                 "startpointCodename": "codeTest",
+                "entrypoints": []
             }
         )
         with self.assertRaises(InvalidManifestStructure):

@@ -1,5 +1,6 @@
 from os import listdir
 from os import path
+from typing import List
 import json
 
 from .game import Level, Entrypoint
@@ -8,6 +9,7 @@ from .exceptions import (
     InvalidLevelStructure,
     InvalidManifestStructure,
     DuplicatedLevelIdentifier,
+    MissingStartpoint
 )
 
 
@@ -16,12 +18,14 @@ class Loader:
 
     LEVELS_PATH = "backend/levels"
     MINIMUM_LEVEL_FILES = ("manifest.json", "level.py")
-    MINIMUM_MANIFEST_KEYS = ("id", "startpointLevelId", "startpointCodename")
+    MINIMUM_MANIFEST_KEYS = ("id", "startpointLevelId", "startpointCodename", "entrypoints")
 
     @classmethod
     def local_levels(cls):
+        """Return a generator object with instances of Levels
+        found in levels folder"""
 
-        ids_parsed = []
+        ids_parsed: List[LevelIdentifier] = []
 
         possible_levels = listdir(cls.LEVELS_PATH)
         for level in possible_levels:
@@ -59,4 +63,34 @@ class Loader:
 
         for key in cls.MINIMUM_MANIFEST_KEYS:
             if key not in level_manifest:
-                raise InvalidManifestStructure
+                raise InvalidManifestStructure(f'Missing Key {key}')
+
+    @classmethod
+    def order_levels(cls):
+        levels: List[Level] = []
+
+        local_levels = list(cls.local_levels())
+
+        # Search for origin story
+        for idx, level in enumerate(local_levels):
+            if level.startpointCodename == 'origin' and level.startpointLevelId == 'origin':
+                levels[0] = local_levels.pop(idx)
+
+        # For each entrypoint of the level
+        
+        for idx, local_level in enumerate(local_levels):
+            if local_level.startpoint.level_identifier == level.identifier:
+                levels.append(local_levels.pop(idx))
+
+        # If exists, add to levels, remove from local_levels
+
+        # Raise for unregistered levels
+        if local_levels:
+            missing_startpoints = ', '.join([
+                level.startpoint.level_identifier for level in local_levels
+            ])
+            raise MissingStartpoint(missing_startpoints)
+
+        # Return ordered levels
+
+        return levels
