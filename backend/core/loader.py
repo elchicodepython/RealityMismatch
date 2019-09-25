@@ -77,12 +77,10 @@ class Loader:
                 levels[0] = local_levels.pop(idx)
 
         # For each entrypoint of the level
-        
         for idx, local_level in enumerate(local_levels):
+            # If exists, add to levels, remove from local_levels
             if local_level.startpoint.level_identifier == level.identifier:
                 levels.append(local_levels.pop(idx))
-
-        # If exists, add to levels, remove from local_levels
 
         # Raise for unregistered levels
         if local_levels:
