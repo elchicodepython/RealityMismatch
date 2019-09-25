@@ -43,3 +43,8 @@ class DuplicatedLevelIdentifier(Exception):
     identifier even if they are not in use at the same time"""
 
     pass
+
+
+class MissingStartpoint(Exception):
+    """Exception to be raised when a Level uses a startpoint that
+    its not available"""
