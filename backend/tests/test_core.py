@@ -1,4 +1,5 @@
 import unittest
+from unittest.mock import patch
 
 from ..core.exceptions import (
     EntrypointNotEmpty,
@@ -175,3 +176,8 @@ class TestLoader(unittest.TestCase):
         )
         with self.assertRaises(InvalidManifestStructure):
             Loader.check_valid_level_manifest({})
+
+    @patch('core.loader.listdir', return_value=['foo'])
+    def test__check_level_exists(self, *args):
+        self.assertTrue(Loader._check_level_exists('foo'))
+        self.assertFalse(Loader._check_level_exists('bar'))
