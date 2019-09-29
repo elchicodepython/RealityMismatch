@@ -9,6 +9,7 @@ from typing import List
 from .game import Level, Entrypoint
 from .types import LevelIdentifier, EntrypointCodename
 from .exceptions import (
+    AlreadyRegisteredLevel,
     InvalidLevelStructure,
     InvalidManifestStructure,
     DuplicatedLevelIdentifier,
@@ -71,11 +72,20 @@ class Loader:
             shutil.move(path.join(origin_folder, file_or_folder), dst_folder)
 
     @classmethod
+    def _check_level_exists(cls, level_name: str):
+        """Check if a level exists locally by searching it inside the installed
+        levels"""
+
+        return level_name in listdir(cls.LEVELS_PATH)
+
+    @classmethod
     def install_new_level(self, level_filename: str):
         """Load a Level from a .tar.gz file.
 
-        Raises a FileNotFoundError if the level_filename provided does'nt exist
-        Raises a InvalidManifestStructure if the manifest is invalid.
+        Raises FileNotFoundError if the level_filename provided does'nt exist
+        Raises InvalidManifestStructure if the manifest is invalid.
+        Raises AlreadyRegisteredLevel if there is a level with the same name
+         already installed locally.
 
         :param level_filename: .tar.gz file with the level structure
         :type level_filename: str
@@ -101,7 +111,8 @@ class Loader:
         level_backend_path = path.join(self.LEVELS_PATH, level_manifest['id'])
         level_frontend_path = path.join(self.LEVELS_UI, level_manifest['id'])
 
-        # TODO check not in local levels
+        if not self._check_level_exists(level_name):
+            raise AlreadyRegisteredLevel
 
         # Create backend structure
         mkdir(level_backend_path)
