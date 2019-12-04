@@ -41,6 +41,7 @@ const precss = require("precss");
  */
 
 const UglifyJSPlugin = require("uglifyjs-webpack-plugin");
+const LevelLoaderPlugin = require("./LevelLoaderPlugin");
 
 module.exports = {
   module: {
@@ -106,6 +107,8 @@ module.exports = {
       }
     ]
   },
+
+  plugins: [new LevelLoaderPlugin({options: true})],
 
   entry: {
     app: "./src/app/index.ts"
