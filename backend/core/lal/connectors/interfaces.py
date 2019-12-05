@@ -5,11 +5,11 @@ from . import Status
 
 class AccessInformation(ABC):
     """Information needed to access to a Lab by a client"""
+
     pass
 
 
 class Connection(ABC):
-
     @abstractmethod
     def open(self) -> bool:
         """Initializes a connection with a Lab provider.

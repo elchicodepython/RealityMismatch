@@ -13,7 +13,7 @@ from .exceptions import (
     InvalidLevelStructure,
     InvalidManifestStructure,
     DuplicatedLevelIdentifier,
-    MissingStartpoint
+    MissingStartpoint,
 )
 
 
@@ -22,9 +22,14 @@ class Loader:
 
     LEVELS_PATH = "backend/levels"
     LEVELS_UI = "ui/src/levels"
-    TEMP = '/tmp'
+    TEMP = "/tmp"
     MINIMUM_LEVEL_FILES = ("manifest.json", "level.py")
-    MINIMUM_MANIFEST_KEYS = ("id", "startpointLevelId", "startpointCodename", "entrypoints")
+    MINIMUM_MANIFEST_KEYS = (
+        "id",
+        "startpointLevelId",
+        "startpointCodename",
+        "entrypoints",
+    )
 
     @classmethod
     def local_levels(cls):
@@ -91,25 +96,26 @@ class Loader:
         :type level_filename: str
         """
 
-        assert level_filename.endswith('.level'), ('The provided file is not '
-                                                   'a valid level')
+        assert level_filename.endswith(".level"), (
+            "The provided file is not " "a valid level"
+        )
 
-        level_name = path.basename(level_filename).split('.')[0]
+        level_name = path.basename(level_filename).split(".")[0]
 
-        with tarfile.open(level_filename, 'r:gz') as level_tar:
+        with tarfile.open(level_filename, "r:gz") as level_tar:
             level_tar.extractall(path=path.join(self.TEMP, level_name))
 
         level_tmp_folder = path.join(self.TEMP, level_name)
 
-        manifest_file = path.join(level_tmp_folder, 'manifest.json')
+        manifest_file = path.join(level_tmp_folder, "manifest.json")
 
         with open(manifest_file) as manifest:
             level_manifest = json.loads(manifest.read())
 
         self.check_valid_level_manifest(level_manifest)
 
-        level_backend_path = path.join(self.LEVELS_PATH, level_manifest['id'])
-        level_frontend_path = path.join(self.LEVELS_UI, level_manifest['id'])
+        level_backend_path = path.join(self.LEVELS_PATH, level_manifest["id"])
+        level_frontend_path = path.join(self.LEVELS_UI, level_manifest["id"])
 
         if not self._check_level_exists(level_name):
             raise AlreadyRegisteredLevel
@@ -122,11 +128,13 @@ class Loader:
 
         # Move files into level folder
         shutil.move(manifest_file, level_backend_path)
-        self.__move_to(path.join(level_tmp_folder, 'backend'),
-                       level_backend_path)
+        self.__move_to(
+            path.join(level_tmp_folder, "backend"), level_backend_path
+        )
 
-        self.__move_to(path.join(level_tmp_folder, 'frontend'),
-                       level_frontend_path)
+        self.__move_to(
+            path.join(level_tmp_folder, "frontend"), level_frontend_path
+        )
 
         # Remove temporary folder
         shutil.rmtree(level_tmp_folder)
@@ -142,7 +150,7 @@ class Loader:
 
         for key in cls.MINIMUM_MANIFEST_KEYS:
             if key not in level_manifest:
-                raise InvalidManifestStructure(f'Missing Key {key}')
+                raise InvalidManifestStructure(f"Missing Key {key}")
 
     @classmethod
     def order_levels(cls):
@@ -152,7 +160,10 @@ class Loader:
 
         # Search for origin story
         for idx, level in enumerate(local_levels):
-            if level.startpointCodename == 'origin' and level.startpointLevelId == 'origin':
+            if (
+                level.startpointCodename == "origin"
+                and level.startpointLevelId == "origin"
+            ):
                 levels[0] = local_levels.pop(idx)
 
         # For each entrypoint of the level
@@ -163,9 +174,9 @@ class Loader:
 
         # Raise for unregistered levels
         if local_levels:
-            missing_startpoints = ', '.join([
-                level.startpoint.level_identifier for level in local_levels
-            ])
+            missing_startpoints = ", ".join(
+                [level.startpoint.level_identifier for level in local_levels]
+            )
             raise MissingStartpoint(missing_startpoints)
 
         # Return ordered levels
