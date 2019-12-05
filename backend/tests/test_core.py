@@ -9,6 +9,7 @@ from ..core.exceptions import (
 )
 from ..core.game import Entrypoint, Level, Story
 from ..core.types import LevelIdentifier, EntrypointCodename
+from ..core import loader
 from ..core.loader import Loader
 
 
@@ -177,7 +178,7 @@ class TestLoader(unittest.TestCase):
         with self.assertRaises(InvalidManifestStructure):
             Loader.check_valid_level_manifest({})
 
-    @patch('core.loader.listdir', return_value=['foo'])
+    @patch.object(loader, 'listdir', return_value=['foo'])
     def test__check_level_exists(self, *args):
         self.assertTrue(Loader._check_level_exists('foo'))
         self.assertFalse(Loader._check_level_exists('bar'))
