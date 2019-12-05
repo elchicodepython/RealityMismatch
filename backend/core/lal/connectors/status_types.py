@@ -5,6 +5,7 @@ class Status(Enum):
     """Enumeration of available Connection statuses returned
     by laboratory connectors.
     """
+
     INITIALIZATION_IN_PROGRESS = 0
     NO_WORKERS_AVAILABLE = 1
     LAB_INITIALIZED = 2

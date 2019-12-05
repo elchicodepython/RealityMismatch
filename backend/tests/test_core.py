@@ -172,13 +172,13 @@ class TestLoader(unittest.TestCase):
                 "id": "testManifest",
                 "startpointLevelId": "testId",
                 "startpointCodename": "codeTest",
-                "entrypoints": []
+                "entrypoints": [],
             }
         )
         with self.assertRaises(InvalidManifestStructure):
             Loader.check_valid_level_manifest({})
 
-    @patch.object(loader, 'listdir', return_value=['foo'])
+    @patch.object(loader, "listdir", return_value=["foo"])
     def test__check_level_exists(self, *args):
-        self.assertTrue(Loader._check_level_exists('foo'))
-        self.assertFalse(Loader._check_level_exists('bar'))
+        self.assertTrue(Loader._check_level_exists("foo"))
+        self.assertFalse(Loader._check_level_exists("bar"))
