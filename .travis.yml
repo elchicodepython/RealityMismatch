@@ -9,4 +9,5 @@ matrix:
         - black -l 78 --check backend/
         - flake8
         - pytest backend/
+        - mypy --ignore-missing-imports backend/**/*.py
 
