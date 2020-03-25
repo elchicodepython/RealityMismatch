@@ -5,6 +5,11 @@ from .exceptions import (
     EntrypointDoesNotExist,
     EntrypointNotEmpty,
 )
+
+from sdk.level import Level as DevelopedLevel, LevelView as DevelopedView
+from bridge.urls import level_url
+from bridge.views import get_view
+
 from .types import LevelIdentifier, EntrypointCodename
 
 
@@ -56,17 +61,19 @@ class Level:
     """Base class for the levels of the game
     """
 
-    def __init__(self, identifier: LevelIdentifier, startpoint: Entrypoint):
+    def __init__(self, identifier: LevelIdentifier, startpoint: Entrypoint, level: DevelopedLevel):
         self._identifier: LevelIdentifier = identifier
         self._startpoint: Entrypoint = startpoint
         self._entrypoints: List[Entrypoint] = []
+        self._level: DevelopedLevel = level
+
 
     @property
-    def startpoint(self):
+    def startpoint(self) -> str:
         return self._startpoint
 
     @property
-    def identifier(self):
+    def identifier(self) -> str:
         return self._identifier
 
     def get_entrypoint(self, codename: EntrypointCodename):
@@ -91,6 +98,13 @@ class Level:
                     EntrypointCodename(codename),
                 )
             )
+    
+    def get_urls(self) -> List:
+        urls = []
+        for view in self._level.api():
+            new_url = level_url(f'{self._identifier}/{view.__class__.__name__}', get_view(view))
+            urls.append(new_url)
+        return urls
 
     def __str__(self):
         return f"<Level id={self.identifier}>"

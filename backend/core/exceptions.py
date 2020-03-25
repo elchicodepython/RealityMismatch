@@ -48,3 +48,13 @@ class DuplicatedLevelIdentifier(Exception):
 class MissingStartpoint(Exception):
     """Exception to be raised when a Level uses a startpoint that
     its not available"""
+
+
+class MissingCurrentClass(Exception):
+    """Exception to be raised when a Level module does'nt have
+    a Current object"""
+
+
+class InvalidCurrentClass(Exception):
+    """Exception to be raised when a Level does'nt inherits from
+    sdk.level.Level abstract class"""

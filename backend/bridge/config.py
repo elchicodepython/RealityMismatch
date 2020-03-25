@@ -1,4 +1,4 @@
-from django.conf import settings as conf
+from django.conf import settings
 
 """Empty configuration file just to be loosly coupled to django or other
 framework configuration.
@@ -9,3 +9,13 @@ this module.
 eg. `from core.config import conf`
 
 """
+
+class Conf:
+    def __getitem__(self, key):
+        value = getattr(settings, key)
+        if not value:
+            raise KeyError
+        return value
+
+
+conf = Conf()
