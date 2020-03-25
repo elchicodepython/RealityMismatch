@@ -1,11 +1,14 @@
 from os import listdir
 from os import path, mkdir
+from importlib import import_module
 import json
 import shutil
 
 import tarfile
 from typing import List
 
+from bridge.config import conf
+from sdk.level import Level as DevelopedLevel
 from .game import Level, Entrypoint
 from .types import LevelIdentifier, EntrypointCodename
 from .exceptions import (
@@ -14,15 +17,18 @@ from .exceptions import (
     InvalidManifestStructure,
     DuplicatedLevelIdentifier,
     MissingStartpoint,
+    MissingCurrentClass,
+    InvalidCurrentClass,
 )
 
 
 class Loader:
-    # TODO: Doc this class
+    """Provides functionality for loading, installing and ordering levels.
+    """
 
-    LEVELS_PATH = "backend/levels"
-    LEVELS_UI = "ui/src/levels"
-    TEMP = "/tmp"
+    LEVELS_PATH = conf["LEVELS_PATH"]
+    LEVELS_UI = conf["LEVELS_UI"]
+    TEMP = conf["TMP_FILES"]
     MINIMUM_LEVEL_FILES = ("manifest.json", "level.py")
     MINIMUM_MANIFEST_KEYS = (
         "id",
@@ -40,28 +46,50 @@ class Loader:
 
         possible_levels = listdir(cls.LEVELS_PATH)
         for level in possible_levels:
-            level_folder = listdir(path.join(cls.LEVELS_PATH), level)
+            level_folder = listdir(path.join(cls.LEVELS_PATH, level))
             for needed_file in cls.MINIMUM_LEVEL_FILES:
                 if needed_file not in level_folder:
                     raise InvalidLevelStructure
 
-            level_manifest = json.loads(
+            with open(
                 path.join(path.join(cls.LEVELS_PATH, level), "manifest.json")
-            )
+            ) as level_manifest_file:
+                level_manifest_data = level_manifest_file.read()
+
+            level_manifest = json.loads(level_manifest_data)
             cls.check_valid_level_manifest(level_manifest)
 
             if level_manifest["id"] in ids_parsed:
                 raise DuplicatedLevelIdentifier
 
-            level = Level(
+            level_module = import_module(f"levels.{level}.level")
+            level_class = getattr(level_module, "Current")
+
+            if not level_class:
+                raise MissingCurrentClass(
+                    "Level module should provide a `Current` class"
+                )
+
+            try:
+                if not issubclass(level_class, DevelopedLevel):
+                    raise TypeError
+            except TypeError:
+                raise InvalidCurrentClass(
+                    "Current class should inherit from sdk.level.Level"
+                )
+
+            level_instance = level_class()
+
+            new_level = Level(
                 LevelIdentifier(level_manifest["id"]),
                 Entrypoint(
                     LevelIdentifier(level_manifest["startpointLevelId"]),
                     EntrypointCodename(level_manifest["startpointCodename"]),
                 ),
+                level_instance,
             )
             ids_parsed.append(level_manifest["id"])
-            yield level
+            yield new_level
 
     def __move_to(origin_folder: str, dst_folder: str):
         """Move all the files and folders inside a origin to a destination.
@@ -85,18 +113,18 @@ class Loader:
 
     @classmethod
     def install_new_level(self, level_filename: str):
-        """Load a Level from a .tar.gz file.
+        """Load a Level from a .lvl file.
 
         Raises FileNotFoundError if the level_filename provided does'nt exist
         Raises InvalidManifestStructure if the manifest is invalid.
         Raises AlreadyRegisteredLevel if there is a level with the same name
          already installed locally.
 
-        :param level_filename: .tar.gz file with the level structure
+        :param level_filename: .lvl file with the level structure
         :type level_filename: str
         """
 
-        assert level_filename.endswith(".level"), (
+        assert level_filename.endswith(".lvl"), (
             "The provided file is not " "a valid level"
         )
 
