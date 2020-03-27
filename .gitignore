@@ -1,4 +1,5 @@
 ui/node_modules/
 ui/src/level_loader.js
+docs/build/doctrees/
 __pycache__
 *.pyc
