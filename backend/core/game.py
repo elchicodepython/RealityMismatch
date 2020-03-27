@@ -4,13 +4,14 @@ from .exceptions import (
     AlreadyRegisteredLevel,
     EntrypointDoesNotExist,
     EntrypointNotEmpty,
+    LevelNotRegistered,
+    MissingActionInsideLevel
 )
 
 from sdk.level import Level as DevelopedLevel, LevelView as DevelopedView
-from bridge.urls import level_url
 from bridge.views import get_view
 
-from .types import LevelIdentifier, EntrypointCodename
+from .types import LevelIdentifier, EntrypointCodename, ActionIdentifier
 
 
 class Entrypoint:
@@ -98,13 +99,12 @@ class Level:
                     EntrypointCodename(codename),
                 )
             )
-    
-    def get_urls(self) -> List:
-        urls = []
-        for view in self._level.api():
-            new_url = level_url(f'{self._identifier}/{view.__class__.__name__}', get_view(view))
-            urls.append(new_url)
-        return urls
+
+    def get_action(self, action_identifier: ActionIdentifier) -> callable:
+        action = self._level.api().get(action_identifier)
+        if action is None:
+            raise MissingActionInsideLevel(action_identifier)
+        return action
 
     def __str__(self):
         return f"<Level id={self.identifier}>"
@@ -118,6 +118,7 @@ class Story:
         level = Level(
             LevelIdentifier("origin"),
             Entrypoint("origin", "."),  # Dummy Startpoint
+            DummyLevel()
         )
         level.add_entrypoint("origin")
         self._levels["origin"] = level
@@ -153,3 +154,17 @@ class Story:
 
         # Register the level into the startpoint
         level_entry.register(level)
+
+
+    def resolve_action(self, level_identifier: LevelIdentifier, action_identifier: ActionIdentifier):
+        level = self._levels.get(level_identifier)
+        if level is None:
+            raise LevelNotRegistered
+
+        return level.get_action(action_identifier)
+
+
+class DummyLevel(DevelopedLevel):
+
+    def api(self):
+        return {}

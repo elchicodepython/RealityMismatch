@@ -4,3 +4,7 @@ class LevelIdentifier(str):
 
 class EntrypointCodename(str):
     pass
+
+
+class ActionIdentifier(str):
+    pass
