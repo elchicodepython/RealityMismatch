@@ -3,6 +3,7 @@ from core.game import Story
 from core.views import generate_resolve_action_view
 from bridge.urls import add_url
 
+
 def setup():
     """Initialize a basic game structure with
     the local levels installed"""
@@ -14,7 +15,6 @@ def setup():
         story.add_level(level)
 
     add_url(
-        'actions/<level_identifier>/<action_identifier>',
-        generate_resolve_action_view(story)
+        "actions/<level_identifier>/<action_identifier>",
+        generate_resolve_action_view(story),
     )
-
