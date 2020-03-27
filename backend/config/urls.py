@@ -16,6 +16,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-urlpatterns = [path("admin/", admin.site.urls), 
-               path('web/', include('web.urls')) # Dinamically generated URLs during setup
-               ]
+urlpatterns = [
+    path("admin/", admin.site.urls),
+    path(
+        "web/", include("web.urls")
+    ),  # Dinamically generated URLs during setup
+]

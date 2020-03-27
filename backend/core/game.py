@@ -5,7 +5,7 @@ from .exceptions import (
     EntrypointDoesNotExist,
     EntrypointNotEmpty,
     LevelNotRegistered,
-    MissingActionInsideLevel
+    MissingActionInsideLevel,
 )
 
 from sdk.level import Level as DevelopedLevel, LevelView as DevelopedView
@@ -62,12 +62,16 @@ class Level:
     """Base class for the levels of the game
     """
 
-    def __init__(self, identifier: LevelIdentifier, startpoint: Entrypoint, level: DevelopedLevel):
+    def __init__(
+        self,
+        identifier: LevelIdentifier,
+        startpoint: Entrypoint,
+        level: DevelopedLevel,
+    ):
         self._identifier: LevelIdentifier = identifier
         self._startpoint: Entrypoint = startpoint
         self._entrypoints: List[Entrypoint] = []
         self._level: DevelopedLevel = level
-
 
     @property
     def startpoint(self) -> str:
@@ -118,7 +122,7 @@ class Story:
         level = Level(
             LevelIdentifier("origin"),
             Entrypoint("origin", "."),  # Dummy Startpoint
-            DummyLevel()
+            DummyLevel(),
         )
         level.add_entrypoint("origin")
         self._levels["origin"] = level
@@ -155,8 +159,11 @@ class Story:
         # Register the level into the startpoint
         level_entry.register(level)
 
-
-    def resolve_action(self, level_identifier: LevelIdentifier, action_identifier: ActionIdentifier):
+    def resolve_action(
+        self,
+        level_identifier: LevelIdentifier,
+        action_identifier: ActionIdentifier,
+    ):
         level = self._levels.get(level_identifier)
         if level is None:
             raise LevelNotRegistered
@@ -165,6 +172,5 @@ class Story:
 
 
 class DummyLevel(DevelopedLevel):
-
     def api(self):
         return {}

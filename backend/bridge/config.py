@@ -10,6 +10,7 @@ eg. `from core.config import conf`
 
 """
 
+
 class Conf:
     def __getitem__(self, key):
         value = getattr(settings, key)
