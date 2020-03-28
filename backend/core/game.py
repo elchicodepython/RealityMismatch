@@ -8,8 +8,7 @@ from .exceptions import (
     MissingActionInsideLevel,
 )
 
-from sdk.level import Level as DevelopedLevel, LevelView as DevelopedView
-from bridge.views import get_view
+from sdk.level import Level as DevelopedLevel
 
 from .types import LevelIdentifier, EntrypointCodename, ActionIdentifier
 
