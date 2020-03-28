@@ -1,6 +1,6 @@
 from abc import ABCMeta, abstractmethod
 
-from typing import Dict
+from typing import Dict, Callable
 
 from core.types import ActionIdentifier
 
@@ -13,5 +13,5 @@ class LevelView(metaclass=ABCMeta):
 
 class Level(metaclass=ABCMeta):
     @abstractmethod
-    def api(self) -> Dict[ActionIdentifier, callable]:
+    def api(self) -> Dict[ActionIdentifier, Callable]:
         pass

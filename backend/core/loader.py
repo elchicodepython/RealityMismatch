@@ -91,6 +91,7 @@ class Loader:
             ids_parsed.append(level_manifest["id"])
             yield new_level
 
+    @staticmethod
     def __move_to(origin_folder: str, dst_folder: str):
         """Move all the files and folders inside a origin to a destination.
 
