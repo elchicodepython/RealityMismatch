@@ -1,16 +1,16 @@
 import unittest
 from unittest.mock import patch
 
-from ..core.exceptions import (
+from core.exceptions import (
     EntrypointNotEmpty,
     EntrypointDoesNotExist,
     AlreadyRegisteredLevel,
     InvalidManifestStructure,
 )
-from ..core.game import Entrypoint, Level, Story
-from ..core.types import LevelIdentifier, EntrypointCodename
-from ..core import loader
-from ..core.loader import Loader
+from core.game import Entrypoint, Level, Story, DummyLevel
+from core.types import LevelIdentifier, EntrypointCodename
+from core import loader
+from core.loader import Loader
 
 
 class TestEntrypoint(unittest.TestCase):
@@ -40,7 +40,9 @@ class TestEntrypoint(unittest.TestCase):
 
     def test_register(self):
         entrypoint = self._get_entrypoint()
-        level = Level(LevelIdentifier("defoobarspam"), entrypoint)
+        level = Level(
+            LevelIdentifier("defoobarspam"), entrypoint, DummyLevel()
+        )
         entrypoint.register(level)
 
         self.assertTrue(entrypoint.has_level())
@@ -56,6 +58,7 @@ class TestLevel(unittest.TestCase):
             Entrypoint(
                 LevelIdentifier("mismatchId"), EntrypointCodename("start")
             ),
+            DummyLevel(),
         )
 
     def test_initialization(self):
@@ -107,6 +110,7 @@ class TestStory(unittest.TestCase):
             Entrypoint(
                 LevelIdentifier("origin"), EntrypointCodename("origin")
             ),
+            DummyLevel(),
         )
         story = Story()
 
@@ -120,6 +124,7 @@ class TestStory(unittest.TestCase):
             Entrypoint(
                 LevelIdentifier("origin"), EntrypointCodename("origin")
             ),
+            DummyLevel(),
         )
 
         with self.assertRaises(EntrypointNotEmpty):
@@ -131,6 +136,7 @@ class TestStory(unittest.TestCase):
             Entrypoint(
                 LevelIdentifier("origin"), EntrypointCodename("origin")
             ),
+            DummyLevel(),
         )
         level.add_entrypoint(EntrypointCodename("matrix"))
         story = Story()

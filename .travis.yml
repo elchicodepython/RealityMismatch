@@ -3,11 +3,12 @@ matrix:
     - language: python
       dist: xenial
       python: 3.7
+      env:
+        - DJANGO_SETTINGS_MODULE=config.settings.default
       before_script:
         - pip install -r backend/requirements/development.txt
       script:
         - black -l 78 --check backend/
         - flake8
-        - pytest backend/
         - mypy --ignore-missing-imports backend/**/*.py
-
+        - cd backend/ && python -m pytest

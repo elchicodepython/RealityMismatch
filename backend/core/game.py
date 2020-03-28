@@ -1,4 +1,4 @@
-from typing import List, Dict
+from typing import List, Dict, Callable, Optional
 
 from .exceptions import (
     AlreadyRegisteredLevel,
@@ -24,7 +24,7 @@ class Entrypoint:
     ):
         self._level_identifier = level_identifier
         self._codename = codename
-        self.__level = None
+        self.__level: Optional[Level] = None
 
     @property
     def codename(self):
@@ -73,7 +73,7 @@ class Level:
         self._level: DevelopedLevel = level
 
     @property
-    def startpoint(self) -> str:
+    def startpoint(self) -> Entrypoint:
         return self._startpoint
 
     @property
@@ -103,7 +103,7 @@ class Level:
                 )
             )
 
-    def get_action(self, action_identifier: ActionIdentifier) -> callable:
+    def get_action(self, action_identifier: ActionIdentifier) -> Callable:
         action = self._level.api().get(action_identifier)
         if action is None:
             raise MissingActionInsideLevel(action_identifier)
