@@ -10,6 +10,6 @@ without making breaking changes
 
 
 def add_url(url_name, url_view):
-    """Patch urlpatterns list 
+    """Patch urlpatterns list
     """
     urls.urlpatterns.append(path(url_name, url_view))
