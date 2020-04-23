@@ -6,6 +6,7 @@ from core.exceptions import (
     EntrypointDoesNotExist,
     AlreadyRegisteredLevel,
     InvalidManifestStructure,
+    InvalidLevelStructure,
 )
 from core.game import Entrypoint, Level, Story, DummyLevel
 from core.types import LevelIdentifier, EntrypointCodename
@@ -168,9 +169,28 @@ class TestLoader(unittest.TestCase):
     MINIMUM_LEVEL_FILES = ("manifest.json", "level.py")
     MINIMUM_MANIFEST_KEYS = ("id", "startpointLevelId", "startpointCodename")
 
-    def test_local_levels(self):
-        Loader.local_levels()
-        # TODO: to complete this test
+    @patch.object(loader.Loader, "LEVELS_PATH", "tests/fixtures/levels_ok")
+    def test_local_levels_ok(self):
+        local_levels = list(Loader.local_levels())
+        self.assertEqual(len(local_levels), 1)
+
+    @patch.object(loader.Loader, "LEVELS_PATH", "tests/fixtures/levels_ok")
+    @patch.object(
+        loader.Loader,
+        "MINIMUM_LEVEL_FILES",
+        ("missing_file.py", "manifest.json"),
+    )
+    def test_local_levels_missing_required_files(self):
+        with self.assertRaises(InvalidLevelStructure):
+            list(Loader.local_levels())
+
+    @patch.object(loader.Loader, "LEVELS_PATH", "tests/fixtures/levels_ok")
+    @patch.object(loader.Loader, "MINIMUM_MANIFEST_KEYS", ("key1", "key2"))
+    def test_local_levels_is_checking_manifest(self):
+        with self.assertRaises(InvalidManifestStructure):
+            list(Loader.local_levels())
+
+    # Todo: End writting tests for Loader.local_levels()
 
     def test_check_valid_manifest(self):
         Loader.check_valid_level_manifest(
