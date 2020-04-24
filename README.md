@@ -47,6 +47,12 @@ https://github.com/airbnb/javascript
 
 #### Style formatting
 
+##### Commit Guidelines
+
+The project will follow semantic commit messages from now on. 
+
+https://gist.github.com/joshbuchea/6f47e86d2510bce28f8e7f42ae84c716
+
 ##### Python
 
 The project will use back style formatting for Python code.
