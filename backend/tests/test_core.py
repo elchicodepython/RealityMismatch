@@ -9,6 +9,7 @@ from core.exceptions import (
     InvalidLevelStructure,
     DuplicatedLevelIdentifier,
     MissingCurrentClass,
+    InvalidCurrentClass,
 )
 from core.game import Entrypoint, Level, Story, DummyLevel
 from core.types import LevelIdentifier, EntrypointCodename
@@ -207,6 +208,20 @@ class TestLoader(unittest.TestCase):
     )
     def test_local_levels_is_checking_missing_current_class(self):
         with self.assertRaises(MissingCurrentClass):
+            list(Loader.local_levels())
+
+    @patch.object(
+        loader.Loader,
+        "LEVELS_PATH",
+        "tests/fixtures/levels_missing_Level_inheritance",
+    )
+    @patch.object(
+        loader.Loader,
+        "LEVELS_PYPATH",
+        "tests.fixtures.levels_missing_Level_inheritance",
+    )
+    def test_local_levels_is_checking_current_class_inheritance(self):
+        with self.assertRaises(InvalidCurrentClass):
             list(Loader.local_levels())
 
     # Todo: End writting tests for Loader.local_levels()
