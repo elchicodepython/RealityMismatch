@@ -90,9 +90,7 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
     },
-    {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"
-    },
+    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
     {
         "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"
     },
@@ -126,3 +124,4 @@ STATIC_URL = "/static/"
 LEVELS_PATH = os.path.join(BASE_DIR, "levels")
 LEVELS_UI = os.path.join(os.path.dirname(BASE_DIR), "ui/src/levels")
 TMP_FILES = "/tmp"
+LEVELS_PYPATH = "levels"

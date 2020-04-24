@@ -7,7 +7,8 @@ from core.exceptions import (
     AlreadyRegisteredLevel,
     InvalidManifestStructure,
     InvalidLevelStructure,
-    DuplicatedLevelIdentifier
+    DuplicatedLevelIdentifier,
+    MissingCurrentClass,
 )
 from core.game import Entrypoint, Level, Story, DummyLevel
 from core.types import LevelIdentifier, EntrypointCodename
@@ -152,9 +153,7 @@ class TestStory(unittest.TestCase):
 
         with self.assertRaises(EntrypointDoesNotExist):
             story._get_entrypoint(
-                Entrypoint(
-                    LevelIdentifier("intro"), EntrypointCodename("bar")
-                )
+                Entrypoint(LevelIdentifier("intro"), EntrypointCodename("bar"))
             )
 
         with self.assertRaises(EntrypointDoesNotExist):
@@ -194,6 +193,20 @@ class TestLoader(unittest.TestCase):
     @patch.object(loader.Loader, "LEVELS_PATH", "tests/fixtures/levels_dup")
     def test_local_levels_is_checking_duplicated_ids(self):
         with self.assertRaises(DuplicatedLevelIdentifier):
+            list(Loader.local_levels())
+
+    @patch.object(
+        loader.Loader,
+        "LEVELS_PATH",
+        "tests/fixtures/levels_missing_current_class",
+    )
+    @patch.object(
+        loader.Loader,
+        "LEVELS_PYPATH",
+        "tests.fixtures.levels_missing_current_class",
+    )
+    def test_local_levels_is_checking_missing_current_class(self):
+        with self.assertRaises(MissingCurrentClass):
             list(Loader.local_levels())
 
     # Todo: End writting tests for Loader.local_levels()
