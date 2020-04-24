@@ -28,6 +28,7 @@ class Loader:
 
     LEVELS_PATH = conf["LEVELS_PATH"]
     LEVELS_UI = conf["LEVELS_UI"]
+    LEVELS_PYPATH = conf["LEVELS_PYPATH"]
     TEMP = conf["TMP_FILES"]
     MINIMUM_LEVEL_FILES = ("manifest.json", "level.py")
     MINIMUM_MANIFEST_KEYS = (
@@ -62,10 +63,11 @@ class Loader:
             if level_manifest["id"] in ids_parsed:
                 raise DuplicatedLevelIdentifier
 
-            level_module = import_module(f"levels.{level}.level")
-            level_class = getattr(level_module, "Current")
+            level_module = import_module(f"{cls.LEVELS_PYPATH}.{level}.level")
 
-            if not level_class:
+            try:
+                level_class = getattr(level_module, "Current")
+            except AttributeError:
                 raise MissingCurrentClass(
                     "Level module should provide a `Current` class"
                 )
