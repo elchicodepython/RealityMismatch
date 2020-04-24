@@ -1,0 +1,6 @@
+{
+    "id": "demo_level",
+    "startpointLevelId": "origin",
+    "startpointCodename": "origin",
+    "entrypoints": ["firstDoor", "bed"]
+}

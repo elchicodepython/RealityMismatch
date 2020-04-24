@@ -7,6 +7,7 @@ from core.exceptions import (
     AlreadyRegisteredLevel,
     InvalidManifestStructure,
     InvalidLevelStructure,
+    DuplicatedLevelIdentifier
 )
 from core.game import Entrypoint, Level, Story, DummyLevel
 from core.types import LevelIdentifier, EntrypointCodename
@@ -188,6 +189,11 @@ class TestLoader(unittest.TestCase):
     @patch.object(loader.Loader, "MINIMUM_MANIFEST_KEYS", ("key1", "key2"))
     def test_local_levels_is_checking_manifest(self):
         with self.assertRaises(InvalidManifestStructure):
+            list(Loader.local_levels())
+
+    @patch.object(loader.Loader, "LEVELS_PATH", "tests/fixtures/levels_dup")
+    def test_local_levels_is_checking_duplicated_ids(self):
+        with self.assertRaises(DuplicatedLevelIdentifier):
             list(Loader.local_levels())
 
     # Todo: End writting tests for Loader.local_levels()
