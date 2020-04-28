@@ -16,6 +16,7 @@ builded games currently being developed.
    level_loader
    level_package_structure
    level_development
+   api_gw
 
 Indices and tables
 ==================
